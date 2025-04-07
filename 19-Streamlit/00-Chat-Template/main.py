@@ -32,11 +32,11 @@ with st.sidebar:
     clear_btn = st.button("대화내용 초기화")
     tab1, tab2 = st.tabs(["프롬프트", "프리셋"])
     prompt = """당신은 친절한 AI 어시스턴트 입니다. 사용자의 질문에 간결하게 답변해 주세요."""
-    user_text_prompt = tab1.text_area("프롬프트", value=prompt)
+    user_text_prompt1 = tab1.text_area("프롬프트", value=prompt)
     user_text_apply_btn = tab1.button("프롬프트 적용", key="apply1")
     if user_text_apply_btn:
         tab1.markdown(f"✅ 프롬프트가 적용되었습니다")
-        prompt_template = user_text_prompt + "\n\n#Question:\n{question}\n\n#Answer:"
+        prompt_template = user_text_prompt1 + "\n\n#Question:\n{question}\n\n#Answer:"
         prompt = PromptTemplate.from_template(prompt_template)
         st.session_state["chain"] = create_chain(prompt, "gpt-4o-mini")
 
@@ -55,7 +55,7 @@ print_history()
 
 if "chain" not in st.session_state:
     # user_prompt
-    prompt_template = user_text_prompt + "\n\n#Question:\n{question}\n\n#Answer:"
+    prompt_template = user_text_prompt1 + "\n\n#Question:\n{question}\n\n#Answer:"
     prompt = PromptTemplate.from_template(prompt_template)
     st.session_state["chain"] = create_chain(prompt, "gpt-4o-mini")
 

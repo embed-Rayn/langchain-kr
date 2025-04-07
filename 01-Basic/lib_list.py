@@ -1,6 +1,7 @@
 import pkgutil
 import langchain_core
 import langchain_core.language_models.chat_models
+from langchain_teddynote.prompts import CustomExampleSelector
 
 functions = [name for name in dir(langchain_core.language_models.chat_models) 
              if callable(getattr(langchain_core.language_models.chat_models, name)) and not name.startswith("__")]
