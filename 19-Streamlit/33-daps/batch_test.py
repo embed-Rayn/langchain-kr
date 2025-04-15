@@ -61,7 +61,7 @@ for idx, row in df.iterrows():
     with cols[1]:
         st.markdown(f"{row['review_date']}")
     with cols[2]:
-        st.markdown(f"{row['question']}".replace("~", "\~"))
+        st.markdown(f"{row['question']}".replace("~", "\\~"))
     with cols[3]:
         st.markdown(f"{row['sentiment']}")
     with cols[4]:
