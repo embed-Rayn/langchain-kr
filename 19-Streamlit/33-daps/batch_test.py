@@ -16,8 +16,8 @@ def create_chain(prompt, model):
     chain = prompt | llm | JsonOutputParser()
     return chain
 
-prompt = load_prompt("prompts/default.yaml", encoding="utf8")
-chain = create_chain(prompt, "gpt-4.1-2025-04-14")
+prompt = load_prompt("prompts/init_default.yaml", encoding="utf8")
+chain = create_chain(prompt, "o4-mini")
 
 # 데이터프레임 불러오기
 df = pd.read_json("data/input_example.json", encoding="utf8")
@@ -25,8 +25,8 @@ df = pd.read_json("data/input_example.json", encoding="utf8")
 # AI 답변(초안)과 감정점수 1회만 생성
 if "draft_answers" not in st.session_state or "sentiments" not in st.session_state:
     # LangChain batch 실행
-    inputs = [{"question": q} for q in df["question"].tolist()]
-    results = list(chain.batch(inputs))
+    inputs = [{"review": r, ""} for r in df.loc[["review", "a"]].tolist()]
+    results = list(chain.batch(inputs))         # LLM 실행
     draft_answers = []
     sentiments = []
     for res in results:
@@ -41,8 +41,10 @@ else:
 df["answer"] = draft_answers
 df["sentiment"] = sentiments
 
-# product_name = df["product_name"].iloc[0] if not df.empty else "제품명 없음"
-product_name = "페페로니 간식 세트"
+product_name = df["product_name"].iloc[0] if not df.empty else "제품명 없음"
+# product_name = "페페로니 간식 세트"
+print(product_name)
+print(df.head(3))
 st.markdown(f"### {product_name} 리뷰 결과")
 
 # 수정 답변을 session_state에 저장 (최초 1회만)
@@ -61,7 +63,7 @@ for idx, row in df.iterrows():
     with cols[1]:
         st.markdown(f"{row['review_date']}")
     with cols[2]:
-        st.markdown(f"{row['question']}".replace("~", "\\~"))
+        st.markdown(f"{row['review']}".replace("~", "\\~"))
     with cols[3]:
         st.markdown(f"{row['sentiment']}")
     with cols[4]:
@@ -82,7 +84,7 @@ with cols[1]:
             if row["answer"] != st.session_state["modified_answers"][idx]:
                 changed_list.append({
                     "review_id": row["review_id"],
-                    "question": row["question"],
+                    "review": row["review"],
                     "original_answer": row["answer"],
                     "modified_answer": st.session_state["modified_answers"][idx]
                 })
