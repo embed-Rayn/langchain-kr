@@ -11,7 +11,7 @@ st.title("DAPS 💬")
 def create_chain(prompt, model):
     llm = ChatOpenAI(
         temperature=0.1,
-        model_name="gpt-4o-mini",
+        model_name=model,
     )
     chain = prompt | llm | JsonOutputParser()
     return chain
@@ -25,7 +25,10 @@ df = pd.read_json("data/input_example.json", encoding="utf8")
 # AI 답변(초안)과 감정점수 1회만 생성
 if "draft_answers" not in st.session_state or "sentiments" not in st.session_state:
     # LangChain batch 실행
-    inputs = [{"review": r, ""} for r in df.loc[["review", "a"]].tolist()]
+    print(df.columns)
+    # inputs = [{"review": r, "product_name": p} for r, p in df[["review", "product_name"]].tolist()]
+    inputs = df[["review", "product_name"]].to_dict('records')
+    print(inputs)
     results = list(chain.batch(inputs))         # LLM 실행
     draft_answers = []
     sentiments = []
